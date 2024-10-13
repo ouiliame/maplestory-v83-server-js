@@ -1,7 +1,13 @@
 import * as net from 'net';
 import { RecvOpcode } from './opcodes';
 import { Buffer } from 'buffer';
-import { PacketProcessor, PacketBuffer, ClientCiphers, MapleAESOFB, PacketCreator, PacketDecoder, PacketEncoder } from './util/packets';
+import { MapleAESOFB } from './util/packets/MapleAESOFB';
+import { ClientCiphers } from './util/packets/ClientCiphers';
+import { PacketCreator } from './util/packets/PacketCreator';
+import { PacketDecoder } from './util/packets/PacketDecoder';
+import { PacketEncoder } from './util/packets/PacketEncoder';
+import { PacketBuffer } from './util/packets/PacketBuffer';
+import { PacketProcessor } from './util/packets/PacketProcessor';
 import { Short, Int } from './util/numbers';
 
 export namespace ServerConstants {
@@ -64,6 +70,7 @@ class LoginServer {
     console.log(`Sending packet: ${packet.toString('hex')}`);
     const encodedPacket = this.packetEncoder.encode(packet);
     console.log(`Sending encoded packet: ${encodedPacket.toString('hex')}`);
+    // @ts-ignore
     socket.write(encodedPacket);
   }
 
@@ -71,6 +78,7 @@ class LoginServer {
   private sendHelloPacket(socket: net.Socket, sendIv: Buffer, recvIv: Buffer) {
     const packet = PacketCreator.getHello(83, sendIv, recvIv);
     console.log(`Sending hello packet: ${packet.toString('hex')}`);
+    // @ts-ignore
     socket.write(packet);
   }
 
@@ -109,12 +117,18 @@ class LoginServer {
       clearTimeout(idleTimer);
     });
   }
-
   private startIdleTimer(socket: net.Socket): NodeJS.Timeout {
-    return setTimeout(() => {
+    const timer = setTimeout(() => {
       console.log('Client idle, disconnecting');
       socket.end();
     }, ServerConstants.IDLE_TIME_SECONDS * 1000);
+
+    // Add Symbol.dispose method to make it compatible with NodeJS.Timeout
+    (timer as any)[Symbol.dispose] = () => {
+      clearTimeout(timer);
+    };
+
+    return timer as NodeJS.Timeout;
   }
 
   private registerPacketHandlers() {
@@ -135,7 +149,7 @@ class LoginServer {
     this.packetProcessor.registerHandler(RecvOpcode.SERVERLIST_REQUEST, (socket, data) => {
       console.log('Received server list request');
       // Implement server list logic here
-      
+
     });
 
     // Add more handlers for other packet types

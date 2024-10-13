@@ -35,6 +35,7 @@ export class PacketDecoder {
     }
 
     const packet = Buffer.alloc(packetLength);
+    // @ts-ignore
     data.copy(packet, 0, 4, packetLength + 4);
     console.log("Raw packet data: " + packet.toString('hex'));
 

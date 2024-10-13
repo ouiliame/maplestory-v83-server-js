@@ -68,6 +68,7 @@ Exiting encode method
     this.sendCypher.crypt(data);
     console.log("Packet after sendCypher encryption: " + data.toString('hex'));
 
+    // @ts-ignore
     const result = Buffer.concat([header, data]);
 
     console.log("Exiting encode method");

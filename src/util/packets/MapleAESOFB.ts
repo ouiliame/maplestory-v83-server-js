@@ -40,6 +40,7 @@ export class MapleAESOFB {
   private iv: Buffer;
 
   constructor(iv: Buffer, mapleVersion: Short) {
+    // @ts-ignore
     this.cipher = crypto.createCipheriv('aes-256-ecb', MapleAESOFB.skey, null);
     this.iv = Buffer.from(iv);
     this.mapleVersion = mapleVersion.swapBytes();
@@ -65,7 +66,9 @@ export class MapleAESOFB {
       }
       for (let x = start; x < (start + llength); x++) {
         if ((x - start) % myIv.length === 0) {
+          // @ts-ignore
           const newIv = this.cipher.update(myIv);
+          // @ts-ignore
           newIv.copy(myIv);
         }
         data[x] ^= myIv[(x - start) % myIv.length];

@@ -12,7 +12,7 @@ export class ByteBufOutPacket {
       this.byteBuf = Buffer.alloc(0);
     } else {
       this.byteBuf = Buffer.alloc(initialCapacity || 2);
-      this.byteBuf.writeUInt16LE(op.getValue());
+      this.byteBuf.writeUInt16LE(op as number);
     }
   }
 
@@ -22,6 +22,7 @@ export class ByteBufOutPacket {
 
   writeByte(value: number): void {
     const newBuf = Buffer.alloc(this.byteBuf.length + 1);
+    // @ts-ignore
     this.byteBuf.copy(newBuf);
     newBuf.writeUInt8(value, this.byteBuf.length);
     this.byteBuf = newBuf;
@@ -29,13 +30,16 @@ export class ByteBufOutPacket {
 
   writeBytes(value: Buffer): void {
     const newBuf = Buffer.alloc(this.byteBuf.length + value.length);
+    // @ts-ignore
     this.byteBuf.copy(newBuf);
+    // @ts-ignore
     value.copy(newBuf, this.byteBuf.length);
     this.byteBuf = newBuf;
   }
 
   writeShort(value: number): void {
     const newBuf = Buffer.alloc(this.byteBuf.length + 2);
+    // @ts-ignore
     this.byteBuf.copy(newBuf);
     newBuf.writeUInt16LE(value, this.byteBuf.length);
     this.byteBuf = newBuf;
@@ -43,6 +47,7 @@ export class ByteBufOutPacket {
 
   writeInt(value: number): void {
     const newBuf = Buffer.alloc(this.byteBuf.length + 4);
+    // @ts-ignore
     this.byteBuf.copy(newBuf);
     newBuf.writeInt32LE(value, this.byteBuf.length);
     this.byteBuf = newBuf;
@@ -50,6 +55,7 @@ export class ByteBufOutPacket {
 
   writeLong(value: bigint): void {
     const newBuf = Buffer.alloc(this.byteBuf.length + 8);
+    // @ts-ignore
     this.byteBuf.copy(newBuf);
     newBuf.writeBigInt64LE(value, this.byteBuf.length);
     this.byteBuf = newBuf;
@@ -77,11 +83,13 @@ export class ByteBufOutPacket {
 
   skip(numberOfBytes: number): void {
     const newBuf = Buffer.alloc(this.byteBuf.length + numberOfBytes);
+    // @ts-ignore
     this.byteBuf.copy(newBuf);
     this.byteBuf = newBuf;
   }
 
   equals(o: any): boolean {
+    // @ts-ignore
     return o instanceof ByteBufOutPacket && this.byteBuf.equals(o.byteBuf);
   }
 }

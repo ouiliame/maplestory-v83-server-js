@@ -1,3 +1,4 @@
+import { PacketProcessor } from './PacketProcessor';
 export { ByteBufOutPacket } from './ByteBufOutPacket';
 export { PacketCreator } from './PacketCreator';
 export { MapleAESOFB } from './MapleAESOFB';

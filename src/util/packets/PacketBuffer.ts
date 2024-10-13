@@ -17,6 +17,7 @@ export class PacketBuffer {
 
   append(data: Buffer) {
     console.log("Appending data: " + data.toString('hex'));
+    // @ts-ignore
     this.buffer = Buffer.concat([this.buffer, data]);
   }
 
